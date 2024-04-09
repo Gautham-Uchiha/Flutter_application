@@ -34,6 +34,14 @@ class UserPage extends StatelessWidget {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   Text(
+                    'Username: ${userDetails['username']}',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    'Age: ${userDetails['age']}',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
                     'Email: ${userDetails['email']}',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
@@ -68,7 +76,9 @@ class UserPage extends StatelessWidget {
   Future<Map<String, dynamic>> _getUserDetails() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? name = prefs.getString('name');
+    String? username = prefs.getString('username');
+    int? age = prefs.getInt('age');
     String? email = prefs.getString('email');
-    return {'name': name, 'email': email};
+    return {'name': name, 'username': username, 'age': age, 'email': email};
   }
 }

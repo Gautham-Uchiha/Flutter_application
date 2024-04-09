@@ -158,20 +158,46 @@ class _CheckPageState extends State<CheckPage> {
                     double temperature = double.parse(_temperatureController.text); // Parse temperature value
 
                     // Validate input values
-                    if (height <= 0 || weight <= 0) {
+                    if (height <= 0 || weight <= 0 || heartRate <= 0 || temperature <= 0) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Height and weight must be greater than zero')),
+                        SnackBar(content: Text('Height, weight, heart rate, and temperature must be greater than zero')),
                       );
                       return;
                     }
 
                     // Perform health check logic
-                    // For demonstration, let's assume a simple check
-                    if (weight / ((height / 100) * (height / 100)) >= 18.5 &&
-                        weight / ((height / 100) * (height / 100)) <= 24.9) {
-                      _healthStatus = 'You are within the normal weight range.';
+                    String healthStatus = '';
+
+                    // Check BMI (Body Mass Index)
+                    double bmi = weight / ((height / 100) * (height / 100));
+                    if (bmi >= 18.5 && bmi <= 24.9) {
+                      healthStatus += 'Your BMI is within the normal range.\n';
                     } else {
-                      _healthStatus = 'You are not within the normal weight range.';
+                      healthStatus += 'Your BMI is not within the normal range.\n';
+                    }
+
+                    // Check Blood Pressure
+                    List<String> bpValues = bp.split('/'); // Assuming format is systolic/diastolic
+                    int systolic = int.parse(bpValues[0]);
+                    int diastolic = int.parse(bpValues[1]);
+                    if (systolic < 120 && diastolic < 80) {
+                      healthStatus += 'Your blood pressure is normal.\n';
+                    } else {
+                      healthStatus += 'Your blood pressure is high.\n';
+                    }
+
+                    // Check Heart Rate
+                    if (heartRate >= 60 && heartRate <= 100) {
+                      healthStatus += 'Your heart rate is normal.\n';
+                    } else {
+                      healthStatus += 'Your heart rate is abnormal.\n';
+                    }
+
+                    // Check Temperature
+                    if (temperature >= 36.1 && temperature <= 37.2) {
+                      healthStatus += 'Your body temperature is normal.';
+                    } else {
+                      healthStatus += 'Your body temperature is abnormal.';
                     }
 
                     // Record date and time of the health check
@@ -179,14 +205,14 @@ class _CheckPageState extends State<CheckPage> {
                     String timestamp = now.toString();
 
                     // Save the health check record
-                    _saveRecord(timestamp, _healthStatus);
+                    _saveRecord(timestamp, healthStatus);
 
                     // Show the result to the user
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
                         title: const Text('Health Check Result'),
-                        content: Text(_healthStatus),
+                        content: Text(healthStatus),
                         actions: [
                           TextButton(
                             onPressed: () {
