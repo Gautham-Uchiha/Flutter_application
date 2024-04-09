@@ -18,31 +18,46 @@ class UserPage extends StatelessWidget {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             final userDetails = snapshot.data!;
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  radius: 50,
-                  child: Icon(Icons.person, size: 50),
-                ),
-                SizedBox(height: 20),
-                Text('Name: ${userDetails['name']}'),
-                Text('Email: ${userDetails['email']}'),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () async {
-                    // Clear SharedPreferences and navigate to LoginPage
-                    SharedPreferences prefs = await SharedPreferences.getInstance();
-                    await prefs.clear();
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginPage(title: 'Login',)),
-                    );
-                  },
-                  child: Text('Log Out'),
-                ),
-              ],
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundColor: Colors.blue, // Change avatar background color
+                    child: Icon(Icons.person, size: 50, color: Colors.white), // Change icon color
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    'Name: ${userDetails['name']}',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    'Email: ${userDetails['email']}',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () async {
+                      // Clear SharedPreferences and navigate to LoginPage
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      await prefs.clear();
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginPage(title: 'Login')),
+                      );
+                    },
+                    child: Text(
+                      'Log Out',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), backgroundColor: Color.fromARGB(255, 255, 174, 0), // Change button color
+                    ),
+                  ),
+                ],
+              ),
             );
           }
         },

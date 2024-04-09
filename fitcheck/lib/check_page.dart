@@ -18,6 +18,7 @@ class _CheckPageState extends State<CheckPage> {
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _bpController = TextEditingController();
   final TextEditingController _heartRateController = TextEditingController(); // Added heart rate controller
+  final TextEditingController _temperatureController = TextEditingController(); // Added temperature controller
 
   String _healthStatus = '';
   List<String> _pastRecords = [];
@@ -64,7 +65,12 @@ class _CheckPageState extends State<CheckPage> {
             children: [
               TextFormField(
                 controller: _heightController,
-                decoration: const InputDecoration(labelText: 'Height (cm)'),
+                decoration: InputDecoration(
+                  labelText: 'Height (cm)',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -73,9 +79,15 @@ class _CheckPageState extends State<CheckPage> {
                   return null;
                 },
               ),
+              SizedBox(height: 10),
               TextFormField(
                 controller: _weightController,
-                decoration: const InputDecoration(labelText: 'Weight (kg)'),
+                decoration: InputDecoration(
+                  labelText: 'Weight (kg)',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -84,9 +96,15 @@ class _CheckPageState extends State<CheckPage> {
                   return null;
                 },
               ),
+              SizedBox(height: 10),
               TextFormField(
                 controller: _bpController,
-                decoration: const InputDecoration(labelText: 'Blood Pressure'),
+                decoration: InputDecoration(
+                  labelText: 'Blood Pressure',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
                 keyboardType: TextInputType.text,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -95,13 +113,36 @@ class _CheckPageState extends State<CheckPage> {
                   return null;
                 },
               ),
+              SizedBox(height: 10),
               TextFormField(
                 controller: _heartRateController,
-                decoration: const InputDecoration(labelText: 'Heart Rate (bpm)'),
+                decoration: InputDecoration(
+                  labelText: 'Heart Rate (bpm)',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your heart rate';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 10),
+              TextFormField(
+                controller: _temperatureController,
+                decoration: InputDecoration(
+                  labelText: 'Temperature (°C)',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your temperature';
                   }
                   return null;
                 },
@@ -114,6 +155,7 @@ class _CheckPageState extends State<CheckPage> {
                     double weight = double.parse(_weightController.text);
                     String bp = _bpController.text;
                     int heartRate = int.parse(_heartRateController.text); // Parse heart rate value
+                    double temperature = double.parse(_temperatureController.text); // Parse temperature value
 
                     // Validate input values
                     if (height <= 0 || weight <= 0) {
