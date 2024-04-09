@@ -70,6 +70,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.secondary,
+        automaticallyImplyLeading: false,
         title: const Text("Login"),
       ),
       body: Center(

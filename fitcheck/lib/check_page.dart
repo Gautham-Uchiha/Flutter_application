@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fitcheck/user_page.dart'; // Import user_page.dart
 
 class CheckPage extends StatefulWidget {
-  const CheckPage({Key? key, required String title}) : super(key: key);
+  const CheckPage({Key? key, required this.title}) : super(key: key);
+
+  final String title;
 
   @override
   _CheckPageState createState() => _CheckPageState();
@@ -11,9 +14,10 @@ class CheckPage extends StatefulWidget {
 class _CheckPageState extends State<CheckPage> {
   final _formKey = GlobalKey<FormState>();
 
-  TextEditingController _heightController = TextEditingController();
-  TextEditingController _weightController = TextEditingController();
-  TextEditingController _bpController = TextEditingController();
+  final TextEditingController _heightController = TextEditingController();
+  final TextEditingController _weightController = TextEditingController();
+  final TextEditingController _bpController = TextEditingController();
+  final TextEditingController _heartRateController = TextEditingController(); // Added heart rate controller
 
   String _healthStatus = '';
   List<String> _pastRecords = [];
@@ -35,25 +39,24 @@ class _CheckPageState extends State<CheckPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('FitCheck'),
+        title: const Text('FitCheck'),
         actions: [
           IconButton(
             onPressed: () {
-              // Handle Past Records button press
               _showPastRecordsDialog();
             },
-            icon: Icon(Icons.history),
+            icon: const Icon(Icons.history),
           ),
           IconButton(
             onPressed: () {
-              // Handle User button press
+              Navigator.push(context, MaterialPageRoute(builder: (context) => UserPage())); // Navigate to UserPage when user button is clicked
             },
-            icon: Icon(Icons.person),
+            icon: const Icon(Icons.person),
           ),
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
@@ -61,7 +64,7 @@ class _CheckPageState extends State<CheckPage> {
             children: [
               TextFormField(
                 controller: _heightController,
-                decoration: InputDecoration(labelText: 'Height (cm)'),
+                decoration: const InputDecoration(labelText: 'Height (cm)'),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -72,7 +75,7 @@ class _CheckPageState extends State<CheckPage> {
               ),
               TextFormField(
                 controller: _weightController,
-                decoration: InputDecoration(labelText: 'Weight (kg)'),
+                decoration: const InputDecoration(labelText: 'Weight (kg)'),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -83,7 +86,7 @@ class _CheckPageState extends State<CheckPage> {
               ),
               TextFormField(
                 controller: _bpController,
-                decoration: InputDecoration(labelText: 'Blood Pressure'),
+                decoration: const InputDecoration(labelText: 'Blood Pressure'),
                 keyboardType: TextInputType.text,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -92,20 +95,35 @@ class _CheckPageState extends State<CheckPage> {
                   return null;
                 },
               ),
-              SizedBox(height: 20),
+              TextFormField(
+                controller: _heartRateController,
+                decoration: const InputDecoration(labelText: 'Heart Rate (bpm)'),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your heart rate';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    // Perform health check based on input values
                     double height = double.parse(_heightController.text);
                     double weight = double.parse(_weightController.text);
                     String bp = _bpController.text;
+                    int heartRate = int.parse(_heartRateController.text); // Parse heart rate value
 
-                    // Record date and time of the health check
-                    DateTime now = DateTime.now();
-                    String timestamp = now.toString();
+                    // Validate input values
+                    if (height <= 0 || weight <= 0) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Height and weight must be greater than zero')),
+                      );
+                      return;
+                    }
 
-                    // You can implement health check logic here
+                    // Perform health check logic
                     // For demonstration, let's assume a simple check
                     if (weight / ((height / 100) * (height / 100)) >= 18.5 &&
                         weight / ((height / 100) * (height / 100)) <= 24.9) {
@@ -114,6 +132,10 @@ class _CheckPageState extends State<CheckPage> {
                       _healthStatus = 'You are not within the normal weight range.';
                     }
 
+                    // Record date and time of the health check
+                    DateTime now = DateTime.now();
+                    String timestamp = now.toString();
+
                     // Save the health check record
                     _saveRecord(timestamp, _healthStatus);
 
@@ -121,21 +143,21 @@ class _CheckPageState extends State<CheckPage> {
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: Text('Health Check Result'),
+                        title: const Text('Health Check Result'),
                         content: Text(_healthStatus),
                         actions: [
                           TextButton(
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text('OK'),
+                            child: const Text('OK'),
                           ),
                         ],
                       ),
                     );
                   }
                 },
-                child: Text('Check Health'),
+                child: const Text('Check Health'),
               ),
             ],
           ),
@@ -174,7 +196,7 @@ class _CheckPageState extends State<CheckPage> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: Text('OK'),
+            child: const Text('OK'),
           ),
         ],
       ),
